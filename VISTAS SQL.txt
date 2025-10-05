@@ -1,0 +1,60 @@
+VISTAS SQL;
+
+CREATE OR REPLACE VIEW reporte_inventario AS
+SELECT 
+    i.id_inventario AS ID,
+    pr.descripcion AS Producto,
+    pd.cantidad AS Cantidad,
+    pr.peso AS Peso,
+    pr.estado_cacao AS Estado,
+    pr.humedad AS Humedad,
+    b.movimiento AS "Ultimo Mov",
+    pd.fecha_entrega AS "Fecha Mov",
+    pv.nombre AS Proveedor
+FROM inventario i
+JOIN pedido pd ON i.id_pedido = pd.id_pedido
+JOIN producto pr ON pd.id_producto = pr.id_producto
+JOIN proveedor pv ON pd.id_proveedor = pv.id_proveedor
+JOIN bodega b ON i.id_inventario = b.id_inventario
+WHERE pd.recibido = 'S';
+
+
+CREATE OR REPLACE VIEW inventario_resumido AS
+SELECT 
+    pr.descripcion AS Producto,
+    SUM(pd.cantidad) AS Cantidad,
+    pr.estado_cacao AS Estado,
+    pr.humedad AS Humedad
+FROM inventario i
+JOIN pedido pd ON i.id_pedido = pd.id_pedido
+JOIN producto pr ON pd.id_producto = pr.id_producto
+WHERE pd.recibido = 'S'
+GROUP BY pr.descripcion, pr.estado_cacao, pr.humedad;
+
+
+CREATE OR REPLACE VIEW movimientos_inventario AS
+SELECT 
+    i.id_inventario AS ID,
+    pr.descripcion AS Producto,
+    b.movimiento AS "Tipo mov",
+    pd.cantidad AS Cantidad,
+    pd.fecha_entrega AS Fecha
+FROM inventario i
+JOIN pedido pd ON i.id_pedido = pd.id_pedido
+JOIN producto pr ON pd.id_producto = pr.id_producto
+JOIN bodega b ON i.id_inventario = b.id_inventario
+ORDER BY pd.fecha_entrega DESC;
+
+
+CREATE OR REPLACE VIEW pedidos_resumidos AS
+SELECT 
+    pd.id_pedido AS "ID pedido",
+    pv.nombre AS Proveedor,
+    pd.fecha_entrega AS "Fecha entr",
+    CASE 
+        WHEN pd.recibido = 'S' THEN 'Recibido'
+        ELSE 'Pendiente'
+    END AS Estado
+FROM pedido pd
+JOIN proveedor pv ON pd.id_proveedor = pv.id_proveedor
+ORDER BY pd.fecha_entrega DESC;
