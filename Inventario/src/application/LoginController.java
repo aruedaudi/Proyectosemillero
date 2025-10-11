@@ -2,10 +2,15 @@ package application;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class LoginController {
 
@@ -35,11 +40,17 @@ public class LoginController {
 
         // Verificar credenciales con la base de datos
         if (datos.validarLogin(usuario, contrasena)) {
-            mostrarAlerta(AlertType.INFORMATION, "Inicio de sesión exitoso", "Bienvenido, " + usuario + "!");
-            
-            
-
-        } else {
+        	 try {
+        	        FXMLLoader loader = new FXMLLoader(getClass().getResource("MenuPrincipal.fxml"));
+        	        Parent root = loader.load();
+        	        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        	        Scene scene = new Scene(root);
+        	        stage.setScene(scene);
+        	        stage.show();
+        	    } catch (Exception e) {
+        	        e.printStackTrace();
+        	    }
+        	}else {
             mostrarAlerta(AlertType.ERROR, "Error de autenticación", "Usuario o contraseña incorrectos.");
         }
     }
