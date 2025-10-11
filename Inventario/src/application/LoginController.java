@@ -37,8 +37,7 @@ public class LoginController {
         if (datos.validarLogin(usuario, contrasena)) {
             mostrarAlerta(AlertType.INFORMATION, "Inicio de sesión exitoso", "Bienvenido, " + usuario + "!");
             
-            // Aquí podrías abrir una nueva ventana o cambiar de escena
-            // por ejemplo: App.setRoot("MenuPrincipal");
+            
 
         } else {
             mostrarAlerta(AlertType.ERROR, "Error de autenticación", "Usuario o contraseña incorrectos.");
