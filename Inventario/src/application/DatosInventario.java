@@ -26,13 +26,14 @@ public class DatosInventario {
             Statement st = conn.createStatement();
 
             // 
-            String query = "SELECT * FROM reporte_inventario";
+            String query = "SELECT * FROM vista_inventario";
 
             ResultSet result = st.executeQuery(query);
 
             while (result.next()) {
                 InventarioAlba item = new InventarioAlba(
                     result.getInt("ID"),
+<<<<<<< HEAD
                     result.getString("Producto"),
                     result.getInt("Cantidad"),
                     result.getFloat("Peso"),
@@ -40,6 +41,15 @@ public class DatosInventario {
                     result.getFloat("Humedad"),
                     result.getString("Ultimo_Mov"),
                     result.getString("Proveedor")
+=======
+                    result.getString("PRODUCTO"),
+                    result.getInt("CANTIDAD"),
+                    result.getFloat("PESO"),
+                    result.getString("ESTADO"),
+                    result.getFloat("HUMEDAD"),
+                    result.getString("FECHA_ING"),
+                    result.getString("PROVEEDOR")
+>>>>>>> f5fa161f1ec18ddf89caf6e9a303e49e4d08983b
                 );
                 data.add(item);
             }
