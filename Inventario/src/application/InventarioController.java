@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -37,6 +38,9 @@ public class InventarioController {
 	private TableColumn<InventarioAlba, String> colFecha;
 	@FXML
 	private TableColumn<InventarioAlba, String> colProveedor;
+	
+	@FXML
+    private Button btnVerReporte;
 
     @FXML
     private TextField txtCantidad;
@@ -82,7 +86,17 @@ public class InventarioController {
 
     @FXML
     void verReporte(ActionEvent event) {
-    	   mostrarAlerta("Reporte", "Generando reporte de inventario...", Alert.AlertType.INFORMATION);
+    	 try {
+    	        FXMLLoader loader = new FXMLLoader(getClass().getResource("ReporteInventario.fxml"));
+    	        Parent root = loader.load();
+    	        
+    	        Stage stage = new Stage();
+    	        stage.setTitle("Reporte de Inventario");
+    	        stage.setScene(new Scene(root));
+    	        stage.show();
+    	    } catch (Exception e) {
+    	        e.printStackTrace();
+    	    }
     }
     
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {

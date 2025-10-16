@@ -41,7 +41,7 @@
     <HBox alignment="CENTER" layoutX="230" layoutY="420" spacing="20">
         <Button onAction="#registrarEntrada" text="Registrar entrada" />
         <Button onAction="#registrarSalida" text="Registrar salida" />
-        <Button onAction="#verReporte" text="Ver reporte" />
+        <Button fx:id="btnVerReporte" text="Ver reporte" onAction="#verReporte" />
     </HBox>
 
 </AnchorPane>

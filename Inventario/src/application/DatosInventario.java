@@ -25,7 +25,7 @@ public class DatosInventario {
 
             Statement st = conn.createStatement();
 
-            // Consulta completa del inventario
+            // 
             String query = "SELECT * FROM reporte_inventario";
 
             ResultSet result = st.executeQuery(query);
