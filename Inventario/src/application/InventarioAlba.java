@@ -10,9 +10,6 @@ public class InventarioAlba {
     private String fechaIngreso;
     private String proveedor;
     
-    // Constructor vacio (requerido por JavaFX)
-    public InventarioAlba() {}
-    
  // Constructor con parámetros
     public InventarioAlba(int id, String producto, int cantidad, float peso, String estado, float humedad, String fechaIngreso, String proveedor) {
         this.id = id;
@@ -25,7 +22,11 @@ public class InventarioAlba {
         this.proveedor = proveedor;
     }
 
- // Getters y setters (necesarios para TableView)
+    public InventarioAlba(String string) {
+		// TODO Auto-generated constructor stub
+	}
+
+	// Getters y setters (necesarios para TableView)
 	public int getId() {
 		return id;
 	}

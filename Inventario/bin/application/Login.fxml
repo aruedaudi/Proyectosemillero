@@ -21,7 +21,7 @@
             <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="117.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fitHeight="124.0" fitWidth="294.0" layoutX="62.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../../Downloads/logogaaf.png" />
+                  <Image url="@../../../../../Downloads/logogaaf.png" />
                </image>
             </ImageView>
          </children>

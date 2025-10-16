@@ -38,7 +38,7 @@ public class DatosInventario {
                     result.getFloat("Peso"),
                     result.getString("Estado"),
                     result.getFloat("Humedad"),
-                    result.getString("Ultimo Mov"),
+                    result.getString("Ultimo_Mov"),
                     result.getString("Proveedor")
                 );
                 data.add(item);
