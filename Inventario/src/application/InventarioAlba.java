@@ -25,7 +25,11 @@ public class InventarioAlba {
         this.proveedor = proveedor;
     }
 
- // Getters y setters (necesarios para TableView)
+ public InventarioAlba(String string) {
+		// TODO Auto-generated constructor stub
+	}
+
+	// Getters y setters (necesarios para TableView)
 	public int getId() {
 		return id;
 	}
