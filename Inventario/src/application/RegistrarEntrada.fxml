@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="application.RegistrarEntradaController"
+            prefWidth="600" prefHeight="480"
+            style="-fx-background-color: #f5f1c6;">
+
+    <VBox spacing="12" alignment="CENTER" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+        <Label text="Registrar Entrada de Productos" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+        <!-- Producto -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Producto:" prefWidth="120"/>
+            <ComboBox fx:id="comboProducto" prefWidth="250" promptText="Seleccione un producto"/>
+        </HBox>
+
+        <!-- Proveedor -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Proveedor:" prefWidth="120"/>
+            <ComboBox fx:id="comboProveedor" prefWidth="250" promptText="Seleccione un proveedor"/>
+        </HBox>
+
+        <!-- Fecha entrega -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Fecha entrega:" prefWidth="120"/>
+            <TextField fx:id="txtFechaEntrega" prefWidth="250" promptText="YYYY-MM-DD"/>
+        </HBox>
+
+        <!-- Cantidad -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Cantidad:" prefWidth="120"/>
+            <TextField fx:id="txtCantidad" prefWidth="250" promptText="Ejemplo: 10"/>
+        </HBox>
+
+        <!-- Fecha creación -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Fecha creación:" prefWidth="120"/>
+            <TextField fx:id="txtFechaCreacion" prefWidth="250" promptText="YYYY-MM-DD"/>
+        </HBox>
+
+        <!-- Recibido -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Recibido:" prefWidth="120"/>
+            <ComboBox fx:id="comboRecibido" prefWidth="250" promptText="Seleccione una opción"/>
+        </HBox>
+
+        <!-- Observaciones -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Observaciones:" prefWidth="120" alignment="TOP_LEFT"/>
+            <TextArea fx:id="txtObservaciones" prefWidth="300" prefHeight="80" wrapText="true"/>
+        </HBox>
+
+        <!-- Botones -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Guardar Entrada" onAction="#guardarEntrada"/>
+            <Button text="Limpiar Campos" onAction="#limpiarCampos"/>
+        </HBox>
+
+        <!-- Estado -->
+        <Label fx:id="lblEstado" textFill="red" style="-fx-font-weight: bold;"/>
+    </VBox>
+</AnchorPane>

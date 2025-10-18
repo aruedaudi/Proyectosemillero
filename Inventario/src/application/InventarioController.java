@@ -16,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class InventarioController {
@@ -75,9 +76,32 @@ public class InventarioController {
     }
 
     @FXML
-    void registrarEntrada(ActionEvent event) {
-    	mostrarAlerta("Registro de entrada", "Entrada registrada correctamente.", Alert.AlertType.INFORMATION);
+    private void registrarEntrada(ActionEvent event) {
+    	try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/RegistrarEntrada.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Registrar Pedido");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+            
+         // 🔄 Después de cerrar la ventana, recargar datos
+            cargarDatosInventario();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+    
+    @FXML
+    private void cargarDatosInventario() {
+        DatosInventario datos = new DatosInventario();
+        ObservableList<InventarioAlba> lista = FXCollections.observableArrayList(datos.getDatos());
+        tablaInventario.setItems(lista);
+    }
+
 
 	@FXML
     void registrarSalida(ActionEvent event) {
@@ -117,6 +141,8 @@ public class InventarioController {
         colHumedad.setCellValueFactory(new PropertyValueFactory<>("humedad"));
         colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaIngreso"));
         colProveedor.setCellValueFactory(new PropertyValueFactory<>("proveedor"));
+        
+        cargarDatosInventario();
         
         DatosInventario datos = new DatosInventario();
         ObservableList<InventarioAlba> lista = FXCollections.observableArrayList(datos.getDatos());
