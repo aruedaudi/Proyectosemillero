@@ -1,77 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<AnchorPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="application.RegistrarEntradaController"
-            prefWidth="400" prefHeight="520"
-            style="-fx-background-color: #f6f3d3; -fx-border-color: #333; -fx-border-width: 2;">
-    
-    <!-- Botón de salida -->
-    <Button text="Salir"
-            layoutX="20" layoutY="10"
-            fx:id="btnSalir"
-            onAction="#salir"
-            style="-fx-background-radius: 10; -fx-padding: 6 12;" />
+            prefWidth="600" prefHeight="480"
+            style="-fx-background-color: #f5f1c6;">
 
-    <!-- Contenedor principal -->
-    <VBox spacing="15" layoutX="40" layoutY="60" prefWidth="320" alignment="TOP_CENTER">
-        
-        <!-- Fila: Producto / Proveedor -->
-        <HBox spacing="20" alignment="CENTER">
-            <VBox spacing="6">
-                <Label text="Producto" style="-fx-font-weight: bold;" />
-                <ComboBox fx:id="cbProducto" promptText="Producto" prefWidth="140"/>
-            </VBox>
+    <VBox spacing="12" alignment="CENTER" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
 
-            <VBox spacing="6">
-                <Label text="Proveedor" style="-fx-font-weight: bold;" />
-                <ComboBox fx:id="cbProveedor" promptText="Proveedor" prefWidth="140"/>
-            </VBox>
+        <Label text="Registrar Entrada de Productos" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+        <!-- Producto -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Producto:" prefWidth="120"/>
+            <ComboBox fx:id="comboProducto" prefWidth="250" promptText="Seleccione un producto"/>
         </HBox>
 
-        <!-- Fila: FechaEntrada / Cantidad -->
-        <HBox spacing="20" alignment="CENTER">
-            <VBox spacing="6">
-                <Label text="Fecha Entrada" style="-fx-font-weight: bold;" />
-                <DatePicker fx:id="dpFechaEntrada" prefWidth="140"/>
-            </VBox>
-
-            <VBox spacing="6">
-                <Label text="Cantidad" style="-fx-font-weight: bold;" />
-                <TextField fx:id="tfCantidad" promptText="Cantidad" prefWidth="140"/>
-            </VBox>
+        <!-- Proveedor -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Proveedor:" prefWidth="120"/>
+            <ComboBox fx:id="comboProveedor" prefWidth="250" promptText="Seleccione un proveedor"/>
         </HBox>
 
-        <!-- Fila: FechaCreacion / Recibido -->
-        <HBox spacing="20" alignment="CENTER">
-            <VBox spacing="6">
-                <Label text="Fecha Creación" style="-fx-font-weight: bold;" />
-                <DatePicker fx:id="dpFechaCreacion" prefWidth="140"/>
-            </VBox>
-
-            <VBox spacing="6">
-                <Label text="Recibido" style="-fx-font-weight: bold;" />
-                <ComboBox fx:id="cbRecibido" promptText="Seleccione" prefWidth="140"/>
-            </VBox>
+        <!-- Fecha entrega -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Fecha entrega:" prefWidth="120"/>
+            <TextField fx:id="txtFechaEntrega" prefWidth="250" promptText="YYYY-MM-DD"/>
         </HBox>
 
-        <!-- Campo de Observaciones -->
-        <VBox spacing="6" alignment="CENTER">
-            <Label text="Observaciones" style="-fx-font-weight: bold;" />
-            <TextArea fx:id="taObservaciones"
-                      promptText="Observaciones"
-                      prefRowCount="4"
-                      prefWidth="310"/>
-        </VBox>
+        <!-- Cantidad -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Cantidad:" prefWidth="120"/>
+            <TextField fx:id="txtCantidad" prefWidth="250" promptText="Ejemplo: 10"/>
+        </HBox>
 
-        <!-- Botón Registrar -->
-        <Button fx:id="btnRegistrar"
-                text="Registrar"
-                onAction="#registrar"
-                style="-fx-background-radius: 12; -fx-padding: 8 20; -fx-font-weight: bold;" />
+        <!-- Fecha creación -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Fecha creación:" prefWidth="120"/>
+            <TextField fx:id="txtFechaCreacion" prefWidth="250" promptText="YYYY-MM-DD"/>
+        </HBox>
+
+        <!-- Recibido -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Recibido:" prefWidth="120"/>
+            <ComboBox fx:id="comboRecibido" prefWidth="250" promptText="Seleccione una opción"/>
+        </HBox>
+
+        <!-- Observaciones -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Observaciones:" prefWidth="120" alignment="TOP_LEFT"/>
+            <TextArea fx:id="txtObservaciones" prefWidth="300" prefHeight="80" wrapText="true"/>
+        </HBox>
+
+        <!-- Botones -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Guardar Entrada" onAction="#guardarEntrada"/>
+            <Button text="Limpiar Campos" onAction="#limpiarCampos"/>
+        </HBox>
+
+        <!-- Estado -->
+        <Label fx:id="lblEstado" textFill="red" style="-fx-font-weight: bold;"/>
     </VBox>
 </AnchorPane>

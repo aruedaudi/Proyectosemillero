@@ -36,7 +36,7 @@ CREATE OR REPLACE VIEW movimientos_inventario AS
 SELECT 
     i.id_inventario AS ID,
     pr.descripcion AS Producto,
-    b.movimiento AS "Tipo mov",
+    b.movimiento AS Tipo_mov,
     pd.cantidad AS Cantidad,
     pd.fecha_entrega AS Fecha
 FROM inventario i
@@ -58,3 +58,102 @@ SELECT
 FROM pedido pd
 JOIN proveedor pv ON pd.id_proveedor = pv.id_proveedor
 ORDER BY pd.fecha_entrega DESC;
+
+
+CREATE OR REPLACE VIEW vista_pedido AS
+SELECT 
+    id_pedido,
+    id_proveedor,
+    id_producto,
+    fecha_entrega AS fecha_entrada,
+    cantidad,
+    fecha_creacion,
+    recibido,
+    observaciones
+FROM pedido;
+
+CREATE OR REPLACE TRIGGER trg_vista_pedido_insert
+INSTEAD OF INSERT ON vista_pedido
+FOR EACH ROW
+BEGIN
+    INSERT INTO pedido (
+        id_pedido,
+        id_proveedor,
+        id_producto,
+        fecha_entrega,
+        cantidad,
+        fecha_creacion,
+        recibido,
+        observaciones
+    ) VALUES (
+        :NEW.id_pedido,
+        :NEW.id_proveedor,
+        :NEW.id_producto,
+        :NEW.fecha_entrada,
+        :NEW.cantidad,
+        :NEW.fecha_creacion,
+        :NEW.recibido,
+        :NEW.observaciones
+    );
+END;
+/
+
+CREATE SEQUENCE pedido_seq
+START WITH 11
+INCREMENT BY 1
+NOCACHE;
+
+CREATE SEQUENCE inventario_seq
+START WITH 11
+INCREMENT BY 1;
+
+
+CREATE OR REPLACE TRIGGER trg_insert_pedido_inventario
+AFTER INSERT ON pedido
+FOR EACH ROW
+WHEN (NEW.recibido = 'S')
+BEGIN
+    INSERT INTO inventario (id_inventario, id_pedido)
+    VALUES (inventario_seq.NEXTVAL, :NEW.id_pedido);
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_update_pedido_inventario
+AFTER UPDATE OF recibido ON pedido
+FOR EACH ROW
+WHEN (NEW.recibido = 'S' AND OLD.recibido <> 'S')
+BEGIN
+    INSERT INTO inventario (id_inventario, id_pedido)
+    VALUES (inventario_seq.NEXTVAL, :NEW.id_pedido);
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_inventario_bodega
+AFTER INSERT ON inventario
+FOR EACH ROW
+DECLARE
+    v_id_bodega NUMBER;
+    v_existe NUMBER;
+BEGIN
+    -- Verifica si ya existe un registro con el mismo id_inventario
+    SELECT COUNT(*) INTO v_existe
+    FROM bodega
+    WHERE id_inventario = :NEW.id_inventario;
+
+    -- Si no existe, se inserta automáticamente
+    IF v_existe = 0 THEN
+        -- Generamos el nuevo ID_BODEGA
+        SELECT NVL(MAX(id_bodega), 0) + 1 INTO v_id_bodega FROM bodega;
+
+        -- Insertamos en la tabla bodega
+        INSERT INTO bodega (id_bodega, id_inventario, lugar, movimiento)
+        VALUES (v_id_bodega, :NEW.id_inventario, 'Bodega Norte', 'Entrada');
+    END IF;
+END;
+/
+
+
+
+
+
+
