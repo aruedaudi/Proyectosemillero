@@ -1,0 +1,13 @@
+# Ignorar archivos compilados
+/bin/
+*.class
+
+# Ignorar configuraciones locales de IDEs
+*.iml
+.idea/
+.vscode/
+
+# Ignorar archivos temporales
+*.log
+*.tmp
+*.DS_Store
