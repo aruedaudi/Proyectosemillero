@@ -38,7 +38,7 @@ public class DatosInventario {
                     result.getFloat("PESO"),
                     result.getString("ESTADO"),
                     result.getFloat("HUMEDAD"),
-                    result.getString("FECHA_MOV"),
+                    result.getString("FECHA_ING"),
                     result.getString("PROVEEDOR")
                 );
                 data.add(item);
