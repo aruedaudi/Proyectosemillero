@@ -1,8 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
+<AnchorPane xmlns:fx="http://javafx.com/fxml" 
+            fx:controller="controller.ReporteGeneralController"
+            prefWidth="800" prefHeight="400"
+            style="-fx-background-color: #f6f3d3;">
+
+    <children>
+
+        <Label text="Reporte general:" layoutX="20" layoutY="10" style="-fx-font-weight: bold;"/>
+
+        <Button fx:id="btnSalir" text="Salir" layoutX="60" layoutY="40" prefWidth="80"/>
+        <Button fx:id="btnVerReporte" text="Ver reporte general" layoutX="340" layoutY="40" prefWidth="150"/>
+
+        <!-- Tabla de inventario resumida -->
+        <Label text="Tabla inventario resumida" layoutX="60" layoutY="80"/>
+        <TableView fx:id="tablaInventario" layoutX="60" layoutY="100" prefWidth="300" prefHeight="120">
+            <columns>
+                <TableColumn fx:id="colProdInv" text="Producto" prefWidth="100"/>
+                <TableColumn fx:id="colCantInv" text="Cantidad" prefWidth="70"/>
+                <TableColumn fx:id="colEstadoInv" text="Estado" prefWidth="70"/>
+                <TableColumn fx:id="colHumedadInv" text="Humedad" prefWidth="70"/>
+            </columns>
+        </TableView>
+
+        <!-- Tabla de movimientos -->
+        <Label text="Tabla de movimientos" layoutX="400" layoutY="80"/>
+        <TableView fx:id="tablaMovimientos" layoutX="400" layoutY="100" prefWidth="340" prefHeight="120">
+            <columns>
+                <TableColumn fx:id="colIdMov" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colProdMov" text="Producto" prefWidth="90"/>
+                <TableColumn fx:id="colTipoMov" text="Tipo mov" prefWidth="80"/>
+                <TableColumn fx:id="colCantMov" text="Cantidad" prefWidth="60"/>
+                <TableColumn fx:id="colFechaMov" text="Fecha" prefWidth="80"/>
+            </columns>
+        </TableView>
+
+        <!-- Tabla de pedidos resumida -->
+        <Label text="Tabla de pedidos resumida" layoutX="60" layoutY="240"/>
+        <TableView fx:id="tablaPedidos" layoutX="60" layoutY="260" prefWidth="680" prefHeight="100">
+            <columns>
+                <TableColumn fx:id="colIdPedido" text="ID pedido" prefWidth="80"/>
+                <TableColumn fx:id="colProveedor" text="Proveedor" prefWidth="150"/>
+                <TableColumn fx:id="colFechaEntr" text="Fecha entr" prefWidth="100"/>
+                <TableColumn fx:id="colEstadoPedido" text="Estado" prefWidth="100"/>
+            </columns>
+        </TableView>
+
+    </children>
 </AnchorPane>
-
