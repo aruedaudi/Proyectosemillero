@@ -22,17 +22,17 @@
     <Button fx:id="btnPedido" layoutX="330" layoutY="260" onAction="#abrirPedido" prefHeight="88.0" prefWidth="150" style="-fx-background-color: #f7b35a; -fx-font-weight: bold;" />
    <ImageView fitHeight="121.0" fitWidth="281.0" layoutX="310.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
       <image>
-         <Image url="@../../../../../Downloads/logogaaf.png" />
+         <Image url="@../images/logogaaf.png" />
       </image>
    </ImageView>
    <ImageView fitHeight="59.0" fitWidth="66.0" layoutX="152.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true">
       <image>
-         <Image url="@../../../../../Downloads/inventariologo.png" />
+         <Image url="@../images/inventariologo.png" />
       </image>
    </ImageView>
    <ImageView fitHeight="59.0" fitWidth="66.0" layoutX="385.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true">
       <image>
-         <Image url="@../../../../../Downloads/7377110.png" />
+         <Image url="@../images/7377110.png" />
       </image>
    </ImageView>
    <Text fill="#4a4747" layoutX="360.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="REPORTE">
@@ -57,12 +57,12 @@
    </Text>
    <ImageView fitHeight="59.0" fitWidth="66.0" layoutX="146.0" layoutY="286.0" pickOnBounds="true" preserveRatio="true">
       <image>
-         <Image url="@../../../../../Downloads/4003697.png" />
+         <Image url="@../images/4003697.png" />
       </image>
    </ImageView>
    <ImageView fitHeight="59.0" fitWidth="66.0" layoutX="375.0" layoutY="286.0" pickOnBounds="true" preserveRatio="true">
       <image>
-         <Image url="@../../../../../Downloads/6632848.png" />
+         <Image url="@../images/6632848.png" />
       </image>
    </ImageView>
 </AnchorPane>
