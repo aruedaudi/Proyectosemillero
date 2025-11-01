@@ -2,6 +2,7 @@ package application;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -52,4 +53,27 @@ public class DatosInventario {
 
         return data;
     }
+    
+    // 🧹 Método para eliminar un registro del inventario por su ID
+    public boolean eliminarPorId(int id) {
+        String sql = "DELETE FROM inventario WHERE id_inventario = ?";
+        
+        try (Connection conn = DriverManager.getConnection(
+                "jdbc:oracle:thin:@localhost:1521:xe",
+                "ALBA_CACAO",
+                "ALBA_CACAO"
+            );
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, id);
+            int filas = stmt.executeUpdate();
+            
+            return filas > 0; // ✅ true si eliminó al menos un registro
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
 }

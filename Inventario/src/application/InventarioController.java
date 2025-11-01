@@ -101,11 +101,45 @@ public class InventarioController {
         ObservableList<InventarioAlba> lista = FXCollections.observableArrayList(datos.getDatos());
         tablaInventario.setItems(lista);
     }
+    
+    @FXML
+    private void seleccionarElemento() {
+        InventarioAlba seleccionado = tablaInventario.getSelectionModel().getSelectedItem();
+        if (seleccionado != null) {
+            txtProducto.setText(seleccionado.getProducto());
+            txtCantidad.setText(String.valueOf(seleccionado.getCantidad()));
+            txtPeso.setText(String.valueOf(seleccionado.getPeso()));
+            txtEstado.setText(seleccionado.getEstado());
+            txtHumedad.setText(String.valueOf(seleccionado.getHumedad()));
+            txtFecha.setText(seleccionado.getFechaIngreso());
+            txtProveedor.setText(seleccionado.getProveedor());
+        }
+    }
 
-
-	@FXML
+    @FXML
     void registrarSalida(ActionEvent event) {
-		  mostrarAlerta("Registro de salida", "Salida registrada correctamente.", Alert.AlertType.INFORMATION);
+        InventarioAlba seleccionado = tablaInventario.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            mostrarAlerta("Error", "Debes seleccionar un elemento del inventario.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        try {
+            // 🔹 Elimina de la BD usando el id
+            DatosInventario datos = new DatosInventario();
+            boolean eliminado = datos.eliminarPorId(seleccionado.getId());
+
+            if (eliminado) {
+                mostrarAlerta("Registro de salida", "Salida registrada correctamente.", Alert.AlertType.INFORMATION);
+                cargarDatosInventario(); // 🔄 refrescar tabla
+            } else {
+                mostrarAlerta("Error", "No se pudo eliminar el registro.", Alert.AlertType.ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Error", "Ocurrió un error al eliminar el registro.", Alert.AlertType.ERROR);
+        }
     }
 
     @FXML
@@ -147,6 +181,12 @@ public class InventarioController {
         DatosInventario datos = new DatosInventario();
         ObservableList<InventarioAlba> lista = FXCollections.observableArrayList(datos.getDatos());
         tablaInventario.setItems(lista);
+        
+        tablaInventario.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                seleccionarElemento();
+            }
+        });
     }
 
 }

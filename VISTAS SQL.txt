@@ -34,6 +34,7 @@ JOIN pedido pd ON i.id_pedido = pd.id_pedido
 JOIN producto pr ON pd.id_producto = pr.id_producto
 WHERE pd.recibido = 'S'
 GROUP BY pr.descripcion, pr.estado_cacao, pr.humedad;
+/
 
 
 CREATE OR REPLACE VIEW movimientos_inventario AS
@@ -48,6 +49,7 @@ JOIN pedido pd ON i.id_pedido = pd.id_pedido
 JOIN producto pr ON pd.id_producto = pr.id_producto
 JOIN bodega b ON i.id_inventario = b.id_inventario
 ORDER BY pd.fecha_entrega DESC;
+/
 
 
 CREATE OR REPLACE VIEW pedidos_resumidos AS
@@ -62,6 +64,7 @@ SELECT
 FROM pedido pd
 JOIN proveedor pv ON pd.id_proveedor = pv.id_proveedor
 ORDER BY pd.fecha_entrega DESC;
+/
 
 
 CREATE OR REPLACE VIEW vista_pedido AS
@@ -75,6 +78,8 @@ SELECT
     recibido,
     observaciones
 FROM pedido;
+/
+
 
 CREATE OR REPLACE TRIGGER trg_vista_pedido_insert
 INSTEAD OF INSERT ON vista_pedido
@@ -101,6 +106,7 @@ BEGIN
     );
 END;
 /
+
 
 CREATE SEQUENCE pedido_seq
 START WITH 11
@@ -178,6 +184,14 @@ BEGIN
 END;
 /
 
+ALTER TABLE bodega
+DROP CONSTRAINT fk_bodega_inventario;
+
+ALTER TABLE bodega
+ADD CONSTRAINT fk_bodega_inventario
+FOREIGN KEY (id_inventario)
+REFERENCES inventario(id_inventario)
+ON DELETE CASCADE;
 
 
 
