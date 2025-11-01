@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.TableColumn;
 
@@ -43,6 +44,8 @@ public class ProveedorController {
 	private Button btnSalirProveedor;
 	@FXML
 	private Button btnProveedores;
+	@FXML
+	private Button btnRegistrarProveedores;
 
 	// Event Listener on Button[#btnSalirProveedor].onAction
 	@FXML
@@ -71,9 +74,29 @@ public class ProveedorController {
 
 	    // ✅ Cargar los datos al presionar el botón "Ver Pedidos"
 	    @FXML
-	    public void verProveedores(ActionEvent event) {
+	    public void verProveedores() {
 	        DatosProveedor datos = new DatosProveedor();
 	        ObservableList<ProveedorAlba> lista = FXCollections.observableArrayList(datos.getDatos());
 	        tablaProveedores.setItems(lista);
+	    }
+	    
+	    @FXML
+	    public void RegistrarProveedores(ActionEvent event) {
+	    	try {
+	            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/RegistrarProveedor.fxml"));
+	            Parent root = loader.load();
+
+	            Stage stage = new Stage();
+	            stage.setTitle("Registrar Proveedor");
+	            stage.setScene(new Scene(root));
+	            stage.initModality(Modality.APPLICATION_MODAL);
+	            stage.showAndWait();
+	            
+	         // 🔄 Después de cerrar la ventana, recargar datos
+	            verProveedores();
+
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
 	    }
 }

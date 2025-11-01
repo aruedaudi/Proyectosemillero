@@ -1,4 +1,8 @@
-VISTAS SQL;
+VISTAS SQL
+
+CREATE USER ALBA_CACAO IDENTIFIED BY ALBA_CACAO;
+GRANT DBA TO ALBA_CACAO;
+CONNECT ALBA_CACAO/ALBA_CACAO;
 
 CREATE OR REPLACE VIEW reporte_inventario AS
 SELECT 
@@ -107,6 +111,28 @@ CREATE SEQUENCE inventario_seq
 START WITH 11
 INCREMENT BY 1;
 
+CREATE SEQUENCE proveedor_seq
+START WITH 6
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+CREATE OR REPLACE TRIGGER trg_proveedor_before_insert
+BEFORE INSERT ON proveedor
+FOR EACH ROW
+DECLARE
+    v_next_id NUMBER;
+BEGIN
+    -- Obtener el siguiente valor de la secuencia
+    SELECT proveedor_seq.NEXTVAL INTO v_next_id FROM dual;
+
+    -- Asignar el ID automáticamente
+    :NEW.id_proveedor := v_next_id;
+
+    -- Asignar 'S' por defecto al campo ACTIVO
+    :NEW.activo := 'S';
+END;
+/
 
 CREATE OR REPLACE TRIGGER trg_insert_pedido_inventario
 AFTER INSERT ON pedido
