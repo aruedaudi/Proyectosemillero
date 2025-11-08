@@ -214,6 +214,9 @@ public class ReporteInventarioController {
     
     @FXML
     private void btnSalir(ActionEvent event) throws IOException {
-    	
+        // Obtener el Stage actual desde el botón
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        // Cerrar la ventana
+        stage.close();
     }
 }
