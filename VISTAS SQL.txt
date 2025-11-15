@@ -4,70 +4,93 @@ CREATE USER ALBA_CACAO IDENTIFIED BY ALBA_CACAO;
 GRANT DBA TO ALBA_CACAO;
 CONNECT ALBA_CACAO/ALBA_CACAO;
 
-CREATE OR REPLACE VIEW reporte_inventario AS
+CREATE TABLE PROVEEDOR (
+    ID_PROVEEDOR     NUMBER        PRIMARY KEY,
+    NOMBRE           VARCHAR2(100) NOT NULL,
+    DIRECCION        VARCHAR2(150) NOT NULL,
+    TELEFONO         NUMBER        NOT NULL,
+    CORREO           VARCHAR2(100) NOT NULL,
+    CIUDAD           VARCHAR2(50)  NOT NULL,
+    VEREDA           VARCHAR2(50)  NOT NULL,
+    OBSERVACIONES    VARCHAR2(255),
+    ACTIVO           CHAR(1)
+);
+
+CREATE TABLE PRODUCTO (
+    ID_PRODUCTO     NUMBER          PRIMARY KEY,
+    DESCRIPCION     VARCHAR2(150)   NOT NULL,
+    PESO            FLOAT(126)      NOT NULL,
+    ESTADO_CACAO    VARCHAR2(50)    NOT NULL,
+    HUMEDAD         FLOAT(126)      NOT NULL,
+    FERMENTACION    FLOAT(126)      NOT NULL
+);
+
+CREATE TABLE PEDIDO (
+    ID_PEDIDO        NUMBER        PRIMARY KEY,
+    ID_PROVEEDOR     NUMBER        NOT NULL,
+    ID_PRODUCTO      NUMBER        NOT NULL,
+    FECHA_ENTREGA    DATE          NOT NULL,
+    CANTIDAD         NUMBER        NOT NULL,
+    FECHA_CREACION   DATE          NOT NULL,
+    RECIBIDO         CHAR(1),
+    OBSERVACIONES    VARCHAR2(255),
+
+    CONSTRAINT FK_PEDIDO_PROV FOREIGN KEY(ID_PROVEEDOR)
+        REFERENCES PROVEEDOR(ID_PROVEEDOR),
+
+    CONSTRAINT FK_PEDIDO_PROD FOREIGN KEY(ID_PRODUCTO)
+        REFERENCES PRODUCTO(ID_PRODUCTO)
+);
+
+CREATE TABLE INVENTARIO (
+    ID_INVENTARIO   NUMBER PRIMARY KEY,
+    ID_PEDIDO       NUMBER NOT NULL,
+
+    CONSTRAINT FK_INV_PED FOREIGN KEY(ID_PEDIDO)
+        REFERENCES PEDIDO(ID_PEDIDO)
+);
+
+CREATE TABLE BODEGA (
+    ID_BODEGA       NUMBER        PRIMARY KEY,
+    ID_INVENTARIO   NUMBER        NOT NULL,
+    LUGAR           VARCHAR2(100) NOT NULL,
+    MOVIMIENTO      VARCHAR2(50)  NOT NULL,
+
+    CONSTRAINT FK_BOD_INV FOREIGN KEY(ID_INVENTARIO)
+        REFERENCES INVENTARIO(ID_INVENTARIO)
+);
+
+
+#SE CONFIGURA PARA QUE SI SE AGREGA UNA NUEVA FILA A INVENTARIO, TAMBIEN A BODEGA E IGUALMENTE SI SE ELIMINA.
+ALTER TABLE bodega
+DROP CONSTRAINT fk_bodega_inventario;
+
+ALTER TABLE bodega
+ADD CONSTRAINT fk_bodega_inventario
+FOREIGN KEY (id_inventario)
+REFERENCES inventario(id_inventario)
+ON DELETE CASCADE;
+
+
+#CREAR VISTA DE LOS DATOS QUE QUEREMOS MOSTRAR EN EL INVENTARIO
+CREATE OR REPLACE VIEW VISTA_INVENTARIO AS
 SELECT 
-    i.id_inventario AS ID,
-    pr.descripcion AS Producto,
-    pd.cantidad AS Cantidad,
-    pr.peso AS Peso,
-    pr.estado_cacao AS Estado,
-    pr.humedad AS Humedad,
-    b.movimiento AS "Ultimo Mov",
-    pd.fecha_entrega AS "Fecha Mov",
-    pv.nombre AS Proveedor
-FROM inventario i
-JOIN pedido pd ON i.id_pedido = pd.id_pedido
-JOIN producto pr ON pd.id_producto = pr.id_producto
-JOIN proveedor pv ON pd.id_proveedor = pv.id_proveedor
-JOIN bodega b ON i.id_inventario = b.id_inventario
-WHERE pd.recibido = 'S';
+    i.ID_INVENTARIO      AS ID,
+    p.DESCRIPCION        AS PRODUCTO,
+    pe.CANTIDAD          AS CANTIDAD,
+    p.PESO               AS PESO,
+    p.ESTADO_CACAO       AS ESTADO,
+    p.HUMEDAD            AS HUMEDAD,
+    pe.FECHA_ENTREGA     AS FECHA_ING,
+    pr.NOMBRE            AS PROVEEDOR
+FROM INVENTARIO i
+JOIN PEDIDO pe       ON i.ID_PEDIDO = pe.ID_PEDIDO
+JOIN PRODUCTO p      ON pe.ID_PRODUCTO = p.ID_PRODUCTO
+JOIN PROVEEDOR pr    ON pe.ID_PROVEEDOR = pr.ID_PROVEEDOR;
 
 
-CREATE OR REPLACE VIEW inventario_resumido AS
-SELECT 
-    pr.descripcion AS Producto,
-    SUM(pd.cantidad) AS Cantidad,
-    pr.estado_cacao AS Estado,
-    pr.humedad AS Humedad
-FROM inventario i
-JOIN pedido pd ON i.id_pedido = pd.id_pedido
-JOIN producto pr ON pd.id_producto = pr.id_producto
-WHERE pd.recibido = 'S'
-GROUP BY pr.descripcion, pr.estado_cacao, pr.humedad;
-/
-
-
-CREATE OR REPLACE VIEW movimientos_inventario AS
-SELECT 
-    i.id_inventario AS ID,
-    pr.descripcion AS Producto,
-    b.movimiento AS Tipo_mov,
-    pd.cantidad AS Cantidad,
-    pd.fecha_entrega AS Fecha
-FROM inventario i
-JOIN pedido pd ON i.id_pedido = pd.id_pedido
-JOIN producto pr ON pd.id_producto = pr.id_producto
-JOIN bodega b ON i.id_inventario = b.id_inventario
-ORDER BY pd.fecha_entrega DESC;
-/
-
-
-CREATE OR REPLACE VIEW pedidos_resumidos AS
-SELECT 
-    pd.id_pedido AS "ID pedido",
-    pv.nombre AS Proveedor,
-    pd.fecha_entrega AS "Fecha entr",
-    CASE 
-        WHEN pd.recibido = 'S' THEN 'Recibido'
-        ELSE 'Pendiente'
-    END AS Estado
-FROM pedido pd
-JOIN proveedor pv ON pd.id_proveedor = pv.id_proveedor
-ORDER BY pd.fecha_entrega DESC;
-/
-
-
-CREATE OR REPLACE VIEW vista_pedido AS
+#CREAR VISTA DE LOS DATOS QUE QUEREMOS MOSTRAR EN LA TABLA PEDIDOS
+CREATE OR REPLACE VIEW vista_pedidos AS
 SELECT 
     id_pedido,
     id_proveedor,
@@ -78,11 +101,49 @@ SELECT
     recibido,
     observaciones
 FROM pedido;
-/
 
 
+#CREAR VISTA PARA PROVEEDOR MAS FRECUENTE
+CREATE OR REPLACE VIEW V_PROVEEDOR_SOLICITADO AS
+SELECT
+    TRUNC(pe.FECHA_CREACION) AS DIA,
+    pv.NOMBRE AS PROVEEDOR,
+    COUNT(*) AS VECES
+FROM PEDIDO pe
+JOIN PROVEEDOR pv ON pv.ID_PROVEEDOR = pe.ID_PROVEEDOR
+GROUP BY TRUNC(pe.FECHA_CREACION), pv.NOMBRE;
+
+
+#CREAR VISTA PARA TOTAL PEDIDOS
+CREATE OR REPLACE VIEW V_TOTAL_PEDIDOS AS
+SELECT
+    TRUNC(FECHA_CREACION) AS DIA,
+    COUNT(*) AS TOTAL_PEDIDOS
+FROM PEDIDO
+GROUP BY TRUNC(FECHA_CREACION);
+
+
+#SIRVEN PARA AUTOGENERAR LOS ID DE PEDIDO, INVENTARIO Y PROVEEDOR RESPECTIVAMENTE.
+
+CREATE SEQUENCE pedido_seq
+START WITH 11
+INCREMENT BY 1
+NOCACHE;
+
+CREATE SEQUENCE inventario_seq
+START WITH 11
+INCREMENT BY 1;
+
+CREATE SEQUENCE proveedor_seq
+START WITH 6
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+
+#PERMITE LA INSERCIÓN DE DATOS EN LA TABLA PEDIDO COMO SI FUESE LA MISMA
 CREATE OR REPLACE TRIGGER trg_vista_pedido_insert
-INSTEAD OF INSERT ON vista_pedido
+INSTEAD OF INSERT ON vista_pedidos
 FOR EACH ROW
 BEGIN
     INSERT INTO pedido (
@@ -108,21 +169,7 @@ END;
 /
 
 
-CREATE SEQUENCE pedido_seq
-START WITH 11
-INCREMENT BY 1
-NOCACHE;
-
-CREATE SEQUENCE inventario_seq
-START WITH 11
-INCREMENT BY 1;
-
-CREATE SEQUENCE proveedor_seq
-START WITH 6
-INCREMENT BY 1
-NOCACHE
-NOCYCLE;
-
+#AUTOGENERA EL ID DEL PROVEEDOR Y POR DEFECTO LO ACTIVA
 CREATE OR REPLACE TRIGGER trg_proveedor_before_insert
 BEFORE INSERT ON proveedor
 FOR EACH ROW
@@ -140,6 +187,8 @@ BEGIN
 END;
 /
 
+
+#CREA UN NUEVO REGISTRO EN EL INVENTARIO CUANDO EL PEDIDO ES RECIBIDO
 CREATE OR REPLACE TRIGGER trg_insert_pedido_inventario
 AFTER INSERT ON pedido
 FOR EACH ROW
@@ -150,6 +199,8 @@ BEGIN
 END;
 /
 
+
+#CUANDO EL PEDIDO SE ACTUALIZA A RECIBIDO LO AGREGA AL INVENTARIO
 CREATE OR REPLACE TRIGGER trg_update_pedido_inventario
 AFTER UPDATE OF recibido ON pedido
 FOR EACH ROW
@@ -160,6 +211,8 @@ BEGIN
 END;
 /
 
+
+#CUANDO UN NUEVO PEDIDO LLEGA A INVENTARIO LO AGREGA TAMBIEN A BODEGA
 CREATE OR REPLACE TRIGGER trg_inventario_bodega
 AFTER INSERT ON inventario
 FOR EACH ROW
@@ -184,34 +237,6 @@ BEGIN
 END;
 /
 
-ALTER TABLE bodega
-DROP CONSTRAINT fk_bodega_inventario;
-
-ALTER TABLE bodega
-ADD CONSTRAINT fk_bodega_inventario
-FOREIGN KEY (id_inventario)
-REFERENCES inventario(id_inventario)
-ON DELETE CASCADE;
-
-
-#CREAR VISTA PARA PROVEEDOR MAS FRECUENTE
-CREATE OR REPLACE VIEW V_PROVEEDOR_SOLICITADO AS
-SELECT
-    TRUNC(pe.FECHA_CREACION) AS DIA,
-    pv.NOMBRE AS PROVEEDOR,
-    COUNT(*) AS VECES
-FROM PEDIDO pe
-JOIN PROVEEDOR pv ON pv.ID_PROVEEDOR = pe.ID_PROVEEDOR
-GROUP BY TRUNC(pe.FECHA_CREACION), pv.NOMBRE;
-
-
-#CREAR VISTA PARA TOTAL PEDIDOS
-CREATE OR REPLACE VIEW V_TOTAL_PEDIDOS AS
-SELECT
-    TRUNC(FECHA_CREACION) AS DIA,
-    COUNT(*) AS TOTAL_PEDIDOS
-FROM PEDIDO
-GROUP BY TRUNC(FECHA_CREACION);
 
 
 
