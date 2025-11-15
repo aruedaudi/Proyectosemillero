@@ -73,20 +73,23 @@ ON DELETE CASCADE;
 
 
 #CREAR VISTA DE LOS DATOS QUE QUEREMOS MOSTRAR EN EL INVENTARIO
-CREATE OR REPLACE VIEW VISTA_INVENTARIO AS
-SELECT 
-    i.ID_INVENTARIO      AS ID,
-    p.DESCRIPCION        AS PRODUCTO,
-    pe.CANTIDAD          AS CANTIDAD,
-    p.PESO               AS PESO,
-    p.ESTADO_CACAO       AS ESTADO,
-    p.HUMEDAD            AS HUMEDAD,
-    pe.FECHA_ENTREGA     AS FECHA_ING,
-    pr.NOMBRE            AS PROVEEDOR
-FROM INVENTARIO i
-JOIN PEDIDO pe       ON i.ID_PEDIDO = pe.ID_PEDIDO
-JOIN PRODUCTO p      ON pe.ID_PRODUCTO = p.ID_PRODUCTO
-JOIN PROVEEDOR pr    ON pe.ID_PROVEEDOR = pr.ID_PROVEEDOR;
+CREATE OR REPLACE VIEW vista_inventario AS
+SELECT
+    i.id_inventario    AS ID,
+    pr.descripcion     AS PRODUCTO,
+    pd.cantidad        AS CANTIDAD,
+    pr.peso            AS PESO,
+    pr.estado_cacao    AS ESTADO,
+    pr.humedad         AS HUMEDAD,
+    pd.fecha_entrega   AS FECHA_ING,
+    pv.nombre          AS PROVEEDOR
+FROM
+    inventario i
+    JOIN pedido    pd ON i.id_pedido = pd.id_pedido
+    JOIN producto  pr ON pd.id_producto = pr.id_producto
+    JOIN proveedor pv ON pd.id_proveedor = pv.id_proveedor
+WHERE
+    pd.recibido = 'S';
 
 
 #CREAR VISTA DE LOS DATOS QUE QUEREMOS MOSTRAR EN LA TABLA PEDIDOS

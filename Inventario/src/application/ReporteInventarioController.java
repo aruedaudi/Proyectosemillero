@@ -126,6 +126,7 @@ public class ReporteInventarioController {
             FROM PEDIDO p
             JOIN PRODUCTO pr ON p.ID_PRODUCTO = pr.ID_PRODUCTO
             WHERE p.FECHA_ENTREGA BETWEEN ? AND ?
+            AND p.RECIBIDO = 'S'
             GROUP BY pr.DESCRIPCION
             ORDER BY pr.DESCRIPCION
         """;
